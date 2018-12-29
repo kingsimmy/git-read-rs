@@ -1,0 +1,10 @@
+[package]
+name = "git-read-rs"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+libflate = "0.1"
+
+[dev-dependencies]
+zip = "0.5"
