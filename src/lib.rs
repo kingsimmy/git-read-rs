@@ -11,13 +11,11 @@ mod tests {
     use std::path::{PathBuf};
     use zip;
 
-    #[test]
-    fn it_works() {
-        let repo_name = "TestRepo01";
+    fn unzip_repo(repo_name: &str) -> String {
         let mut repo_dir = env::temp_dir();
         repo_dir.push(repo_name);
         if repo_dir.exists() {
-            fs::remove_dir_all(&repo_dir).expect("Unable to delete dir");
+            fs::remove_dir_all(&repo_dir).expect(&format!("Unable to delete dir '{:?}'", &repo_dir));
         }
 
         let mut zip_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -43,8 +41,13 @@ mod tests {
                 io::copy(&mut file, &mut outfile).unwrap();
             }
         }
+        repo_dir.to_str().unwrap().to_owned()
+    }
 
-        let reader = Reader{ repository_path: repo_dir.to_str().unwrap().to_owned() };
+    #[test]
+    fn it_works() {
+        let repo_dir = unzip_repo("TestRepo01");
+        let reader = Reader{ repository_path: repo_dir };
         let res = reader.read_loose_file("d670460b4b4aece5915caf5c68d12f560a9fe3e4");
         assert_eq!(res, "test content\n");
     }
